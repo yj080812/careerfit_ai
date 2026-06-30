@@ -43,3 +43,12 @@ dist/
 .DS_Store
 
 Thumbs.db
+.env
+
+backend/.env
+
+venv/
+
+backend/venv/
+
+backend/chroma_db/
