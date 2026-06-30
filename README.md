@@ -31,6 +31,31 @@
 
 | 실행 환경 | Docker |
 
+## 로컬 실행 방법
+
+### 사전 요구 사항
+- pythom 3.11 이상
+- Gemini API Key
+
+### 백엔드 실행
+- cd backend
+- python -m venv venv
+- source venv
+
+### python, 패키지 설치
+
+### 오목 만들기
+
+### FastAPI 구현
+
+### health 구현
+
+### jobs 구현
+
+### post / analyze 구현
+
+### Git 설정
+
 ## 진행 현황
 
 
