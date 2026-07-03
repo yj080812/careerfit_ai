@@ -1,46 +1,34 @@
-# backend/routers/analyze.py
+# backend/routers/analyze.py (수정)
 
 from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List
+from services.llm_service import get_llm_response   # ← 추가
 
 router = APIRouter()
-
 
 class AnalyzeRequest(BaseModel):
     major: str
     skills: List[str]
     job_type: str
 
-
 class AnalyzeResponse(BaseModel):
     answer: str
     sources: List[dict]
 
-
 @router.post("/analyze", response_model=AnalyzeResponse, tags=["Analyze"])
 def analyze_career(request: AnalyzeRequest):
-    """
-    사용자의 전공·스킬·관심 직무를 기반으로 취업·공모전 맞춤 분석을 제공한다.
-
-    현재는 목업 응답을 반환하며, 실습 8에서 Gemini API와 연결한다.
-    """
-
-    mock_answer = (
-        f"{request.major} 학생으로서 {request.job_type} 직무에 지원하려면, "
-        f"현재 보유하신 {', '.join(request.skills)} 역량을 바탕으로 "
-        f"다음과 같은 준비를 추천드립니다. "
-        f"(목업 응답 — 실습 8에서 Gemini로 교체)"
+    # 사용자 질문 구성
+    query = (
+        f"전공: {request.major}, "
+        f"보유 스킬: {', '.join(request.skills)}, "
+        f"관심 직무: {request.job_type}"
     )
 
-    mock_sources = [
-        {
-            "title": "목업 데이터 — 테크스타트업A 데이터 분석가",
-            "content": "요구 스킬: Python, SQL, 통계"
-        }
-    ]
+    # llm_service 호출 (실습 8에서 Gemini + RAG로 교체)
+    result = get_llm_response(query=query, context_docs=[])
 
     return AnalyzeResponse(
-        answer=mock_answer,
-        sources=mock_sources
+        answer=result["answer"],
+        sources=result["sources"]
     )
