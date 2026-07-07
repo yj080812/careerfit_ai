@@ -11,3 +11,13 @@ pandas==2.2.3
 chromadb==0.5.23
 
 pydantic==2.10.3
+
+# 여러 LLM provider 호출용 (Ollama와 Mistral 호출에 필요)
+
+requests==2.34.2
+requests-oauthlib==2.0.0
+
+
+# HuggingFace 사용 시 필요
+
+huggingface_hub
