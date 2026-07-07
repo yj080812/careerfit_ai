@@ -8,6 +8,8 @@
 
 __pycache__/
 
+pycache/
+
 *.pyc
 
 *.pyo
@@ -52,3 +54,17 @@ venv/
 backend/venv/
 
 backend/chroma_db/
+
+.env.*
+
+!.env.example
+
+!.env.production.example
+
+frontend/.env
+
+*api*키*.txt
+
+*key*.txt
+
+*token*.txt

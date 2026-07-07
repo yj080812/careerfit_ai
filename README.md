@@ -130,6 +130,96 @@ uvicorn main:app --reload
 
 ---
 
+---
+
+# 4일차 구현 내용: RAG 기반 서비스 + React UI
+
+## RAG 기반 `/analyze` API 구현
+
+4일차에는 사용자의 전공, 보유 스킬, 관심 직무를 입력받아 관련 공고 데이터를 검색하고, Gemini API를 통해 맞춤형 분석 결과를 생성하는 RAG 기반 분석 기능을 구현했습니다.
+
+처리 흐름은 다음과 같습니다.
+
+```text
+사용자 입력
+→ FastAPI /analyze API
+→ ChromaDB에서 관련 공고 문서 검색
+→ 검색 결과를 Gemini 프롬프트에 포함
+→ AI 분석 답변 생성
+→ answer, sources, confidence 반환
+→ React UI에서 결과 표시
+```
+
+## ChromaDB 문서 검색
+
+`rag_service.py`에서 ChromaDB에 저장된 RAG 문서를 검색하도록 구성했습니다.
+
+주요 구현 내용:
+
+- 사용자 입력을 기반으로 관련 공고 문서 검색
+- distance 값을 활용한 검색 결과 필터링
+- 취업·공모전 범위를 벗어난 질문 차단
+- 검색 결과를 Gemini 프롬프트에 전달할 수 있는 문서 형태로 변환
+
+## Gemini RAG 답변 생성
+
+`llm_service.py`에서 검색된 공고 데이터를 Gemini 프롬프트에 포함하여 답변을 생성하도록 구성했습니다.
+
+주요 구현 내용:
+
+- RAG context 기반 프롬프트 생성
+- 제공된 공고 데이터에 근거한 답변 생성
+- 없는 회사명, 공고명, 스킬을 지어내지 않도록 지침 추가
+- 응답 결과에 `answer`, `sources`, `confidence` 포함
+- API 오류 및 응답 실패 상황 처리
+
+## React UI 구현
+
+React + Vite 기반으로 CareerFit AI의 프론트엔드 화면을 구현했습니다.
+
+구성 컴포넌트:
+
+- `App.jsx`: 전체 상태 관리 및 `/analyze` API 요청
+- `InputForm.jsx`: 전공, 보유 스킬, 관심 직무 입력 폼
+- `ResultCard.jsx`: AI 분석 결과 표시
+- `SourceCard.jsx`: 참고한 공고 데이터 출처 표시
+
+## 프론트엔드 실행 방법
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+프론트엔드 화면:
+
+```text
+http://localhost:5173
+```
+
+백엔드 API 문서:
+
+```text
+http://localhost:8000/docs
+```
+
+## 4일차 보안 점검
+
+- React 코드에 API Key를 넣지 않음
+- Gemini API Key는 `backend/.env`에서만 관리
+- `.env` 파일은 GitHub에 올리지 않도록 `.gitignore`에 포함
+- 프론트엔드는 사용자 입력만 FastAPI에 전달
+- 실제 LLM 호출은 백엔드에서만 수행
+
+## 4일차 결과 요약
+
+4일차 결과물은 사용자가 자신의 전공, 스킬, 관심 직무를 입력하면 CareerFit AI가 관련 공고 데이터를 검색하고, Gemini API를 통해 맞춤형 커리어 분석 결과를 제공하는 웹 UI입니다.
+
+이 과정에서 RAG 검색 결과를 `sources`로 함께 표시하여 AI 답변의 근거를 확인할 수 있도록 했고, `confidence`를 통해 추천 결과의 신뢰도를 사용자에게 보여주도록 구성했습니다.
+
+---
+
 
 ## 진행 현황
 
@@ -141,6 +231,6 @@ uvicorn main:app --reload
 
 - [x] 3일차: 데이터 파이프라인 구축
 
-- [ ] 4일차: RAG 기반 서비스 + React UI
+- [x] 4일차: RAG 기반 서비스 + React UI
 
 - [ ] 5일차: Docker + 포트폴리오 완성
